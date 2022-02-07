@@ -4,10 +4,7 @@ import 'dart:js' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// macke soure you add jsQR library in index.html file
-dynamic _jsQR(data, width, height, option) {
-  return js.context.callMethod('jsQR', [data, width, height, option]);
-}
+import 'camera_controller.dart';
 
 class FlutterWebQrcodeScanner extends StatefulWidget {
   const FlutterWebQrcodeScanner({
@@ -15,22 +12,28 @@ class FlutterWebQrcodeScanner extends StatefulWidget {
     this.controller,
     required this.onGetResult,
     this.onError,
-    this.onPermessionError,
+    this.onPermissionDeniedError,
     this.placeholder,
     this.stopOnFirstResult,
     this.width,
     this.height,
   }) : super(key: key);
+
+  ///this class allow you to strart and stop camera by methods :  startVideoStream() && stopVideoStream()
   final CameraController? controller;
-  final Function? onPermessionError;
+
+  ///this function execute when user block ​connecting to camera
+  final Function? onPermissionDeniedError;
   final double? width;
   final double? height;
+
+  ///this function execute when qrcode image detected and decoded into String
   final Function(String) onGetResult;
 
-  ///widget displayed when video streem is not playing
+  ///widget displayed when video stream is not playing
   final Widget? placeholder;
 
-  ///stop video streem on get first result
+  ///stop video stream on getting first result
   final bool? stopOnFirstResult;
 
   /// *
@@ -75,7 +78,7 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
     _controller.addListener(_cameraControllerListener);
 
     if (_controller.isRecording) {
-      _startVideoStreem();
+      _startVideoStream();
     }
 
     _canvasElement = CanvasElement();
@@ -84,22 +87,22 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
 
   @override
   void dispose() {
-    _stopVideoStreem();
+    _stopVideoStream();
     _controller.removeListener(_cameraControllerListener);
     super.dispose();
   }
 
   void _cameraControllerListener() async {
     if (_controller.isRecording) {
-      _startVideoStreem();
+      _startVideoStream();
       setState(() {});
     } else {
-      // print('stop video streem ');
-      _stopVideoStreem();
+      // print('stop video stream ');
+      _stopVideoStream();
     }
   }
 
-  _startVideoStreem() {
+  _startVideoStream() {
     _stopDecoding = false;
     _result = null;
 
@@ -117,10 +120,10 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
           });
         }
       }).catchError((domError) {
-        _controller.stopVideoStreem();
+        _controller.stopVideoStream();
         if (domError.name == "NotAllowedError") {
-          if (widget.onPermessionError != null) {
-            widget.onPermessionError!();
+          if (widget.onPermissionDeniedError != null) {
+            widget.onPermissionDeniedError!();
           } else {
             if (kDebugMode) {
               print(domError);
@@ -146,7 +149,7 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
     }
   }
 
-  _stopVideoStreem() async {
+  _stopVideoStream() async {
     if (_webcamVideoElement.srcObject?.active != null) {
       _webcamVideoElement.pause();
       if (_stream != null) {
@@ -192,13 +195,14 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
               _result = scanData['data'];
               widget.onGetResult(scanData['data']);
               if (widget.stopOnFirstResult == true) {
-                _controller.stopVideoStreem();
+                _controller.stopVideoStream();
               }
             }
           }
         } catch (e) {
           if (kDebugMode) {
-            print(e);
+            _stopDecoding = true;
+            print(e.toString());
           }
         }
       }
@@ -230,30 +234,14 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
       );
 }
 
-class CameraController extends ChangeNotifier {
-  final bool autoPlay;
-
-  CameraController({this.autoPlay = true}) {
-    if (autoPlay) {
-      _isRecording = true;
-    }
-  }
-
-  bool _isRecording = false;
-
-  bool get isRecording => _isRecording;
-
-  void startVideoStreem() {
-    if (!_isRecording) {
-      _isRecording = true;
-      notifyListeners();
-    }
-  }
-
-  void stopVideoStreem() {
-    if (_isRecording) {
-      _isRecording = false;
-      notifyListeners();
-    }
+dynamic _jsQR(data, width, height, option) {
+  try {
+    return js.context.callMethod('jsQR', [data, width, height, option]);
+  } catch (e) {
+    throw ("""
+\x1B[31m FlutterWebQrcodeScanner can not find the  jsQR library importation place don't forget to add\x1B[0m
+ <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+\x1B[31m in index.html file and restart your app\x1B[0m
+""");
   }
 }

@@ -1,28 +1,65 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_web_qrcode_scanner/flutter_web_qrcode_scanner.dart';
 
-List<CameraDescription> cameras = [];
 void main() {
   return runApp(const MyApp());
 }
-
-// dynamic _jsQR(data, width, height, option) {
-//   return js.context.callMethod('jsQR', [data, width, height, option]);
-// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
-        body: FlutterWebQrcodeScanner(
-          onGetResult: (d) {},
-        ),
+        body: AutoScanExample(),
       ),
+    );
+  }
+}
+
+class AutoScanExample extends StatefulWidget {
+  const AutoScanExample({Key? key}) : super(key: key);
+
+  @override
+  State<AutoScanExample> createState() => _AutoScanExampleState();
+}
+
+class _AutoScanExampleState extends State<AutoScanExample> {
+  String? _data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _data == null
+            ? Container()
+            : Center(
+                child: Text(
+                  _data!,
+                  style: const TextStyle(fontSize: 18, color: Colors.green),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+        FlutterWebQrcodeScanner(
+          onGetResult: (result) {
+            setState(() {
+              _data = result;
+            });
+          },
+          stopOnFirstResult: true,
+          width: MediaQuery.of(context).size.width * 0.8,
+          height: MediaQuery.of(context).size.height * 0.8,
+          onError: (error) {
+            // print(error.message)
+          },
+          onPermissionDeniedError: () {
+            //show alert dialog or something
+          },
+        ),
+      ],
     );
   }
 }
