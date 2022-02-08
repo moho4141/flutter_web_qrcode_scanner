@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_qrcode_scanner/flutter_web_qrcode_scanner.dart';
+import 'package:flutter_web_qrcode_scanner_example/full_example.dart';
 
 void main() {
   return runApp(const MyApp());
@@ -11,8 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      title: "Plugin Example",
       home: Scaffold(
-        body: AutoScanExample(),
+        body: FullExample(),
       ),
     );
   }
