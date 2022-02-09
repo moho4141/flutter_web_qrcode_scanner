@@ -28,7 +28,7 @@ class FlutterWebQrcodeScanner extends StatefulWidget {
   final double? height;
 
   ///this function execute when qrcode image detected and decoded into String
-  final Function(String) onGetResult;
+  final void Function(String) onGetResult;
 
   ///widget displayed when video stream is not playing
   final Widget? placeholder;
