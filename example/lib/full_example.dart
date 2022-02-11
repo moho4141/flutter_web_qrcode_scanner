@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_qrcode_scanner/flutter_web_qrcode_scanner.dart';
-import 'package:flutter_web_qrcode_scanner/flutter_web_qrcode_scanner_web.dart';
 
 class FullExample extends StatefulWidget {
   const FullExample({Key? key}) : super(key: key);
@@ -66,7 +65,7 @@ class _FullExampleState extends State<FullExample> {
                 children: [
                   Button(
                       title: "start camera",
-                      onTap: () {
+                      onTap: () async {
                         _controller.startVideoStream();
                       }),
                   const SizedBox(width: 20),
