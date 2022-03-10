@@ -1,9 +1,11 @@
 import 'dart:html';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:js' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'dart:io' as io;
 import 'camera_controller.dart';
 
 class FlutterWebQrcodeScanner extends StatefulWidget {
@@ -62,6 +64,7 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
   void initState() {
     super.initState();
     String _key = UniqueKey().toString();
+
     _webcamVideoElement = VideoElement()
       ..style.width = "100%"
       ..style.height = "100%";
@@ -180,6 +183,7 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
       );
       if (imageData is ImageData) {
         try {
+          print(imageData.data);
           js.JsObject? code = _jsQR(
             imageData.data,
             imageData.width,
@@ -224,13 +228,106 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
         value: (key) => _convertToDart(value[key]));
   }
 
+  Future picImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    var file = XFile(pickedFile!.path);
+    var _ = await file.readAsBytes();
+    if (pickedFile != null) {
+      var image = await pickedFile.readAsBytes();
+      ui.decodeImageFromList(image, (imageData) async {
+        try {
+          late ImageData? ___;
+
+          try {
+            print(imageData.width);
+            print(imageData.height);
+            ImageElement imgElement = ImageElement(
+                src: pickedFile.path,
+                width: imageData.width,
+                height: imageData.height);
+
+            CanvasRenderingContext2D? _canvas;
+            print(imgElement.src);
+            _canvasElement = CanvasElement();
+            _canvas =
+                _canvasElement.getContext("2d") as CanvasRenderingContext2D?;
+            _canvasElement.width = imgElement.width;
+            _canvasElement.height = imgElement.height;
+            imgElement.addEventListener('load', (e) {
+              _canvas?.drawImage(imgElement, 0, 0);
+            });
+            _canvas?.drawImage(
+                imgElement, imgElement.width!, imgElement.height!);
+            print(_canvasElement.width);
+            print(_canvasElement.height);
+            print(imgElement.width);
+            print(imgElement.height);
+            ___ = _canvas?.getImageData(
+              0,
+              0,
+              _canvasElement.width ?? 100,
+              _canvasElement.height ?? 100,
+            );
+          } catch (e) {
+            print("craerting error");
+            print(e);
+          }
+          try {
+            js.JsObject? code = _jsQR(
+              ___!.data,
+              imageData.width,
+              imageData.height,
+              {
+                'inversionAttempts': 'dontInvert',
+              },
+            );
+            print(___.data);
+            if (code != null) {
+              print('moho you are good man');
+              var scanData = _convertToDart(code);
+
+              if (_result == null || _result != scanData['data']) {
+                _result = scanData['data'];
+                widget.onGetResult(scanData['data']);
+                if (widget.stopOnFirstResult == true) {
+                  _controller.stopVideoStream();
+                }
+              }
+            }
+          } catch (e) {
+            print('u');
+            print(e);
+            print("y");
+          }
+        } catch (e) {
+          print(e);
+        }
+      });
+    } else {
+      print('No image selected.');
+    }
+  }
+
   @override
-  Widget build(BuildContext context) => SizedBox(
-        width: widget.width,
-        height: widget.height,
-        child: _controller.isRecording
-            ? _webcamWidget
-            : widget.placeholder ?? Container(),
+  Widget build(BuildContext context) => Column(
+        children: [
+          SizedBox(
+            width: widget.width,
+            height: widget.height,
+            child: _webcamWidget,
+          ),
+          Container(
+            width: 20,
+            height: 100,
+            color: Colors.blue,
+            child: InkWell(
+              onTap: () {
+                picImage();
+              },
+            ),
+          )
+        ],
       );
 }
 
@@ -238,10 +335,12 @@ dynamic _jsQR(data, width, height, option) {
   try {
     return js.context.callMethod('jsQR', [data, width, height, option]);
   } catch (e) {
-    throw ("""
-\x1B[31m FlutterWebQrcodeScanner can not find the  jsQR library importation place don't forget to add\x1B[0m
- <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-\x1B[31m in index.html file and restart your app\x1B[0m
-""");
+    throw (e);
+
+//     throw ("""
+// \x1B[31m FlutterWebQrcodeScanner can not find the  jsQR library importation place don't forget to add\x1B[0m
+//  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+// \x1B[31m in index.html file and restart your app\x1B[0m
+// """);
   }
 }
