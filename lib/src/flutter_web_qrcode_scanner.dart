@@ -183,7 +183,6 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
       );
       if (imageData is ImageData) {
         try {
-          print(imageData.data);
           js.JsObject? code = _jsQR(
             imageData.data,
             imageData.width,
@@ -240,15 +239,13 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
           late ImageData? ___;
 
           try {
-            print(imageData.width);
-            print(imageData.height);
             ImageElement imgElement = ImageElement(
                 src: pickedFile.path,
                 width: imageData.width,
                 height: imageData.height);
 
             CanvasRenderingContext2D? _canvas;
-            print(imgElement.src);
+
             _canvasElement = CanvasElement();
             _canvas =
                 _canvasElement.getContext("2d") as CanvasRenderingContext2D?;
@@ -259,10 +256,7 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
             });
             _canvas?.drawImage(
                 imgElement, imgElement.width!, imgElement.height!);
-            print(_canvasElement.width);
-            print(_canvasElement.height);
-            print(imgElement.width);
-            print(imgElement.height);
+
             ___ = _canvas?.getImageData(
               0,
               0,
@@ -270,8 +264,7 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
               _canvasElement.height ?? 100,
             );
           } catch (e) {
-            print("craerting error");
-            print(e);
+            if (kDebugMode) print(e.toString());
           }
           try {
             js.JsObject? code = _jsQR(
@@ -282,9 +275,8 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
                 'inversionAttempts': 'dontInvert',
               },
             );
-            print(___.data);
+
             if (code != null) {
-              print('moho you are good man');
               var scanData = _convertToDart(code);
 
               if (_result == null || _result != scanData['data']) {
@@ -295,17 +287,11 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
                 }
               }
             }
-          } catch (e) {
-            print('u');
-            print(e);
-            print("y");
-          }
-        } catch (e) {
-          print(e);
-        }
+          } catch (e) {}
+        } catch (e) {}
       });
     } else {
-      print('No image selected.');
+      if (kDebugMode) print('No image selected.');
     }
   }
 
@@ -317,16 +303,6 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
             height: widget.height,
             child: _webcamWidget,
           ),
-          Container(
-            width: 20,
-            height: 100,
-            color: Colors.blue,
-            child: InkWell(
-              onTap: () {
-                picImage();
-              },
-            ),
-          )
         ],
       );
 }
