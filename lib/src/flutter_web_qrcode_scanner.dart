@@ -1,11 +1,9 @@
 import 'dart:html';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:js' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io' as io;
 import 'camera_controller.dart';
 
 class FlutterWebQrcodeScanner extends StatefulWidget {
@@ -21,7 +19,7 @@ class FlutterWebQrcodeScanner extends StatefulWidget {
     this.height,
   }) : super(key: key);
 
-  ///this class allow you to strart and stop camera by methods :  startVideoStream() && stopVideoStream()
+  ///this class allow you to strart and stop camera by methods :>  startVideoStream() && stopVideoStream()
   final CameraController? controller;
 
   ///this function execute when user block ​connecting to camera
@@ -58,7 +56,6 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
   String? _result;
   late MediaStream? _stream;
   bool _stopDecoding = false;
-  // late MediaRecorder mediaRecorder;
 
   @override
   void initState() {
@@ -311,12 +308,15 @@ dynamic _jsQR(data, width, height, option) {
   try {
     return js.context.callMethod('jsQR', [data, width, height, option]);
   } catch (e) {
-    throw (e);
-
-//     throw ("""
-// \x1B[31m FlutterWebQrcodeScanner can not find the  jsQR library importation place don't forget to add\x1B[0m
-//  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-// \x1B[31m in index.html file and restart your app\x1B[0m
-// """);
+    if (e is NoSuchMethodError) {
+      if (e.toString().contains('jsQR')) {
+        throw ("""
+\x1B[31m FlutterWebQrcodeScanner can not find the  jsQR library importation place don't forget to add\x1B[0m
+ <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+\x1B[31m in index.html file and restart your app\x1B[0m
+""");
+      }
+    }
+    throw e.toString();
   }
 }
