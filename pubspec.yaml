@@ -1,5 +1,5 @@
 name: flutter_web_qrcode_scanner
-description: A new flutter plugin project.
+description: Camera-based QR code scanning for Flutter-Web
 version: 1.0.0
 homepage: https://github.com/moho4141/flutter_web_qrcode_scanner
 
