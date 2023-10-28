@@ -5,11 +5,11 @@
 
 ## 🛠️ Getting Started
 
-Firstly you need to add this plugin `flutter_web_qrcode_scanner:1.0.2` to your [pubspec.yaml](https://flutter.dev/platform-plugins/) file.
+Firstly you need to add this plugin `flutter_web_qrcode_scanner:1.0.3` to your [pubspec.yaml](https://flutter.dev/platform-plugins/) file.
 
 ```yaml
 dependencies:
-  flutter_web_qrcode_scanner:1.0.2
+  flutter_web_qrcode_scanner:1.0.3
 ```
 Then you need to add `<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>`  to your `index.html` file after body tag.
 

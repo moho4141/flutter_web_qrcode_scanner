@@ -31,7 +31,8 @@ class FlutterWebQrcodeScannerWeb {
       default:
         throw PlatformException(
           code: 'Unimplemented',
-          details: 'flutter_web_qrcode_scanner for web doesn\'t implement \'${call.method}\'',
+          details:
+              'flutter_web_qrcode_scanner for web doesn\'t implement \'${call.method}\'',
         );
     }
   }
