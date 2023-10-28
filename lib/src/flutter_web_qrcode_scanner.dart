@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'dart:js' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'camera_controller.dart';
 
 class FlutterWebQrcodeScanner extends StatefulWidget {
@@ -222,74 +222,6 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
     if (value is Iterable) return value.map(_convertToDart).toList();
     return Map.fromIterable(_getKeysOfObject(value),
         value: (key) => _convertToDart(value[key]));
-  }
-
-  Future picImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    var file = XFile(pickedFile!.path);
-    var _ = await file.readAsBytes();
-    if (pickedFile != null) {
-      var image = await pickedFile.readAsBytes();
-      ui.decodeImageFromList(image, (imageData) async {
-        try {
-          late ImageData? ___;
-
-          try {
-            ImageElement imgElement = ImageElement(
-                src: pickedFile.path,
-                width: imageData.width,
-                height: imageData.height);
-
-            CanvasRenderingContext2D? _canvas;
-
-            _canvasElement = CanvasElement();
-            _canvas =
-                _canvasElement.getContext("2d") as CanvasRenderingContext2D?;
-            _canvasElement.width = imgElement.width;
-            _canvasElement.height = imgElement.height;
-            imgElement.addEventListener('load', (e) {
-              _canvas?.drawImage(imgElement, 0, 0);
-            });
-            _canvas?.drawImage(
-                imgElement, imgElement.width!, imgElement.height!);
-
-            ___ = _canvas?.getImageData(
-              0,
-              0,
-              _canvasElement.width ?? 100,
-              _canvasElement.height ?? 100,
-            );
-          } catch (e) {
-            if (kDebugMode) print(e.toString());
-          }
-          try {
-            js.JsObject? code = _jsQR(
-              ___!.data,
-              imageData.width,
-              imageData.height,
-              {
-                'inversionAttempts': 'dontInvert',
-              },
-            );
-
-            if (code != null) {
-              var scanData = _convertToDart(code);
-
-              if (_result == null || _result != scanData['data']) {
-                _result = scanData['data'];
-                widget.onGetResult(scanData['data']);
-                if (widget.stopOnFirstResult == true) {
-                  _controller.stopVideoStream();
-                }
-              }
-            }
-          } catch (e) {}
-        } catch (e) {}
-      });
-    } else {
-      if (kDebugMode) print('No image selected.');
-    }
   }
 
   @override

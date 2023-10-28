@@ -1,10 +1,10 @@
 name: flutter_web_qrcode_scanner
 description: Camera-based QR code scanning for Flutter-Web
-version: 1.0.0
+version: 1.0.2
 homepage: https://github.com/moho4141/flutter_web_qrcode_scanner
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: '>=2.15.0 <4.0.0'
   flutter: ">=2.5.0"
 
 dependencies:
@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  image_picker: ^0.8.4+8
 
 dev_dependencies:
   flutter_test:
