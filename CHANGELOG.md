@@ -1,3 +1,4 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+* Camera-based QR code scanning 
+* CameraController to control video-streem start and end

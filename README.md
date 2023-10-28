@@ -5,13 +5,13 @@
 
 ## 🛠️ Getting Started
 
-Firstly you need to add this plugin `flutter_web_qrcode_scanner:1.0.0` in your [pubspec.yaml](https://flutter.dev/platform-plugins/) file.
+Firstly you need to add this plugin `flutter_web_qrcode_scanner:1.0.0` to your [pubspec.yaml](https://flutter.dev/platform-plugins/) file.
 
 ```yaml
 dependencies:
   flutter_web_qrcode_scanner:1.0.0
 ```
-Then you need to add `<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>`  in your `index.html` file after body tag.
+Then you need to add `<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>`  to your `index.html` file after body tag.
 
 ```html
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -22,40 +22,47 @@ Then you need to add `<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/
 
 
 
-auto play example ' the video preview will start autmticaly '
+Auto play example, The video preview (scanning area) will start automatically
 
 ```dart
  FlutterWebQrcodeScanner(
          
-          stopOnFirstResult: true, //set false if you don't want to stop video preview on getting first result
-          onGetResult: (result) {
+    stopOnFirstResult: true, //set false if you don't want to stop video preview on getting first result
+    onGetResult: (result) {
            // _result = jsonDecode(result);
-          },
-           //width:200,
-          //height:200,
+    },
+    //width:200,
+    //height:200,
+ )
 ```
 
 
-If you want to controll starting and stopping camera you need to add CameraController attribute
+If you want to control the start and stop of camera scanning, you must use the CameraController attribute
 
 ```dart
 CameraController _controller = CameraController(autoPlay: false);
 
 ```
 
-the you can start and stop video preview by calling methods `startVideoStream()` and `stopVideoStream()`
+then you can start and stop video preview by calling methods `startVideoStream()` and `stopVideoStream()`
 
 
 ```dart 
-//some code
+
+InkWell(
+  //some code
   onTap:(){
     _controller.startVideoStream();
-    }
-
-//...
-  FlutterWebQrcodeScanner(
-      onGetResult: (result) {
-            //_result = jsonDecode(result);
+    },
+)
+.
+.
+.
+FlutterWebQrcodeScanner(
+  controller: _controller,
+  onGetResult: (result) {
+            // some code
          _controller.stopVideoStream();
-        },
+      },
+    )
 ```
