@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'camera_controller.dart';
 
+enum CameraDirection {
+  front,
+  back,
+}
+
 class FlutterWebQrcodeScanner extends StatefulWidget {
   const FlutterWebQrcodeScanner({
     Key? key,
@@ -17,6 +22,7 @@ class FlutterWebQrcodeScanner extends StatefulWidget {
     this.stopOnFirstResult,
     this.width,
     this.height,
+    this.cameraDirection = CameraDirection.front,
   }) : super(key: key);
 
   ///this class allow you to strart and stop camera by methods :>  startVideoStream() && stopVideoStream()
@@ -26,6 +32,8 @@ class FlutterWebQrcodeScanner extends StatefulWidget {
   final Function? onPermissionDeniedError;
   final double? width;
   final double? height;
+
+  final CameraDirection cameraDirection;
 
   ///this function execute when qrcode image detected and decoded into String
   final void Function(String) onGetResult;
@@ -108,7 +116,12 @@ class _WebcamPageState extends State<FlutterWebQrcodeScanner> {
 
     if (_webcamVideoElement.srcObject?.active == null ||
         !_webcamVideoElement.srcObject!.active!) {
-      window.navigator.getUserMedia(video: true).then((MediaStream stream) {
+      var facingMode = {'facingMode': 'user'};
+      if (widget.cameraDirection == CameraDirection.back) {
+        facingMode = {'facingMode': 'environment'};
+      }
+      window.navigator.mediaDevices
+          ?.getUserMedia({'video': facingMode}).then((MediaStream stream) {
         _webcamVideoElement.srcObject = stream;
         _stream = stream;
         _webcamVideoElement.setAttribute('playsinline', 'true');

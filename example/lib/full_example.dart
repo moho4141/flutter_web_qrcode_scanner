@@ -49,6 +49,7 @@ class _FullExampleState extends State<FullExample> {
                 width: MediaQuery.of(context).size.width * 0.4,
                 height: MediaQuery.of(context).size.height * 0.4,
                 controller: _controller,
+                cameraDirection: CameraDirection.back,
                 onGetResult: (String data) {
                   resultSum++;
 
