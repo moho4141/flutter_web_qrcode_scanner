@@ -14,3 +14,7 @@
 ## 1.1.0
 
 * Add Camera direction
+
+## 1.1.1
+
+* Update readme.md
