@@ -26,7 +26,7 @@ Auto play example, The video preview (scanning area) will start automatically
 
 ```dart
  FlutterWebQrcodeScanner(
-         
+    cameraDirection: CameraDirection.back,
     stopOnFirstResult: true, //set false if you don't want to stop video preview on getting first result
     onGetResult: (result) {
            // _result = jsonDecode(result);
@@ -36,6 +36,7 @@ Auto play example, The video preview (scanning area) will start automatically
  )
 ```
 
+You are able to choose the scanning camera via the cameraDirection attribute `CameraDirection.back`  or `CameraDirection.front`,
 
 If you want to control the start and stop of camera scanning, you must use the CameraController attribute
 

@@ -1,6 +1,6 @@
 name: flutter_web_qrcode_scanner
 description: Camera-based QR code scanning for Flutter-Web,  The package makes use of the jsQR.js library to gain native access to the camera and scan QR codes
-version: 1.0.3
+version: 1.1.0
 homepage: https://github.com/moho4141/flutter_web_qrcode_scanner
 
 environment:

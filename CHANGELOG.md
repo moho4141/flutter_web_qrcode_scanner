@@ -10,3 +10,7 @@
 ## 1.0.3
  
 * Some Code Formating
+
+## 1.1.0
+
+* Add Camera direction
